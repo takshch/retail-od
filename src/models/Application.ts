@@ -5,6 +5,7 @@ interface IApplication {
   address: String,
   aaddharNumber: Number,
   panNumber: String,
+  owner: String,
 }
 
 const applicationSchema = new Schema<IApplication>({
@@ -12,6 +13,7 @@ const applicationSchema = new Schema<IApplication>({
   address: { type: String, required: true },
   aaddharNumber: { type: Number, required: true },
   panNumber: { type: String, required: true },
+  owner: { type: String, required: true },
 });
 
 const Application = model<IApplication>('Application', applicationSchema);
