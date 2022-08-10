@@ -1,27 +1,38 @@
-import { object, string, number } from 'joi';
+import Joi from 'joi';
 import { RequestHandler } from 'express';
 
+const OPTIONS = {
+  errors: {
+    wrap: { label: '' },
+  },
+};
+
 const validateCreateRetailOD: RequestHandler = async (req, res, next) => {
-  const userSchema = object().strict().keys({
-    firstName: string().required(),
-    lastName: string().required(),
-    mobile: number().required().min(10).max(10),
-    email: string().email().required(),
+  const userSchema = Joi.object().strict().keys({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    mobile: Joi.string().length(10).pattern(/^[0-9]+$/).required().messages({
+      'string.pattern.base': 'user.mobile must have 10 digits'
+    }),
+    email: Joi.string().email().required(),
   });
 
-  const applicationSchema = object().strict().keys({
-    address: string().required(),
-    aadhaarNumber: number().required().min(12).max(12),
-    panNumber: number().required().min(10).max(10),
+  const applicationSchema = Joi.object().strict().keys({
+    creditScore: Joi.number().min(0).max(999).required(),
+    address: Joi.string().required(),
+    aadhaarNumber: Joi.string().length(12).pattern(/^[0-9]+$/).required().messages({
+      'string.pattern.base': 'application.aadhaarNumber must have 12 digits'
+    }),
+    panNumber: Joi.string().length(10).required(),
   });
 
-  const schema = object().strict().keys({
-    user: userSchema,
-    application: applicationSchema,
+  const schema = Joi.object({
+    user: userSchema.required(),
+    application: applicationSchema.required(),
   });
 
   try {
-    await schema.validateAsync(req.body);
+    await schema.validateAsync(req.body, OPTIONS);
     next();
   } catch (e: any) {
     const { details } = e;
