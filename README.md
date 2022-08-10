@@ -12,3 +12,9 @@ https://www.mongodb.com/docs/manual/tutorial/convert-standalone-to-replica-set/?
 npm i
 npm run dev
 ```
+
+# Production
+```cmd
+npm i
+npm run prod
+```
